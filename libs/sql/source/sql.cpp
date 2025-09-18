@@ -2,7 +2,11 @@
 #include <iostream>
 const std::string mainDataPath="DataBaseSql";
 SQL::SQL() :connected(false),db(nullptr),dbPath(mainDataPath){}
-SQL::~SQL() =default;
+SQL::~SQL() {
+    if(connected) {
+        SQL::disconnect();
+    }
+};
 bool SQL::connect() {
     if (sqlite3_open(dbPath.c_str(), &db) != SQLITE_OK) {
         std::cerr << "Ошибка открытия базы данных: " << sqlite3_errmsg(db) << std::endl;
@@ -34,12 +38,10 @@ bool SQL::writeUserFile(const std::string &name, const std::string &fileName) {
         std::string sql = "CREATE TABLE IF NOT EXISTS Users ("
                           "Name TEXT NOT NULL,"
                           "File BLOB NOT NULL);";
-        const char* sql_query = "INSERT INTO Users (Name, File) VALUES (name, fileName);";
+
         char* errMsg = nullptr;
-        sqlite3_stmt *stmt = nullptr;
         int rc = sqlite3_exec(db, sql.c_str(), nullptr, nullptr, &errMsg);
-         std::string cuurentName=name;
-        int rc1 = sqlite3_bind_text(stmt, 1,cuurentName.c_str(), -1, SQLITE_STATIC);
+
         if (rc != SQLITE_OK) {
             std::cerr << "Ошибка создания таблицы: " << errMsg << std::endl;
             sqlite3_free(errMsg);
