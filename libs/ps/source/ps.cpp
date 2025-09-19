@@ -4,10 +4,12 @@ const std::string mainDataPath="DataBaseFs";
 PS::PS():connected(false),mainDataBasePath(mainDataPath){}
 PS::~PS() {
     PS::disconnect();
+    std::cout << "База данных \"" << mainDataPath << "\" закрыта." << std::endl;
 }
 bool PS::connect() {
     connected=true;
     std::filesystem::create_directories(mainDataBasePath);
+    std::cout << "База данных \"" << mainDataPath << "\" успешно открыта/создана." << std::endl;
     return true;
 }
 bool PS::disconnect() {
@@ -27,7 +29,10 @@ bool PS::writeUserFile(const std::string &name, const std::string &fileName) {
         std::filesystem::path sourcePath=fileName;
         if (std::filesystem::exists(sourcePath)) {
         std::filesystem::path destPath=folderName/sourcePath.filename();
-        std::filesystem::copy_file(sourcePath, destPath,std::filesystem::copy_options::overwrite_existing);
+        if (std::filesystem::copy_file(sourcePath, destPath,std::filesystem::copy_options::overwrite_existing)) {
+
+            std::cout << "Файл "<<sourcePath.filename()<<" был успешно добавлен в базу данных"<< std::endl;
+        }
         }
         return true;
 
@@ -43,5 +48,8 @@ std::string PS::readUserFile(const std::string &name) {
         return "";
     }
     std::filesystem::path absolutePath=std::filesystem::absolute(mainDataBasePath/name);
+    if (!std::filesystem::exists(absolutePath)) {
+        std::cerr<<"File does not exist"<<std::endl;
+    }
     return absolutePath.string();
 }
