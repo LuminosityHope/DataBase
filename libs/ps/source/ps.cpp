@@ -3,9 +3,7 @@
 const std::string mainDataPath="DataBaseFs";
 PS::PS():connected(false),mainDataBasePath(mainDataPath){}
 PS::~PS() {
-    if (connected) {
     PS::disconnect();
-    }
 }
 bool PS::connect() {
     connected=true;
@@ -26,10 +24,11 @@ bool PS::writeUserFile(const std::string &name, const std::string &fileName) {
     try {
         std::filesystem::path folderName=mainDataBasePath/name;
         std::filesystem::create_directories(folderName);
-
         std::filesystem::path sourcePath=fileName;
+        if (std::filesystem::exists(sourcePath)) {
         std::filesystem::path destPath=folderName/sourcePath.filename();
         std::filesystem::copy_file(sourcePath, destPath,std::filesystem::copy_options::overwrite_existing);
+        }
         return true;
 
     }
