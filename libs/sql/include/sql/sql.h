@@ -10,6 +10,7 @@ public:
     bool disconnect() override;
     bool isconnected() override;
     bool writeUserFile(const std::string& name, const std::string& fileName) override;
+    bool createDataBase();
     std::string readUserFile(const std::string& name) override;
 private:
     bool connected=false;
