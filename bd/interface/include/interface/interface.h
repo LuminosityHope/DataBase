@@ -14,6 +14,5 @@ public:
     virtual bool isconnected()=0;
     virtual bool writeUserFile(const std::string& name, const std::string& fileName)=0;
     virtual std::string readUserFile(const std::string& name)=0;
-
 };
 #endif //BD_INTERFACE_H
