@@ -14,9 +14,14 @@ bool PS::connect() {
 }
 bool PS::disconnect() {
     connected=false;
+    std::cout<<"You are disconnected";
     return true;
 }
 bool PS::isconnected()  {
+    if(connected)
+        std::cout<<"You are signed"<<std::endl;
+    else
+        std::cout<<"You are not signed"<<std::endl;
     return connected;
 }
 bool PS::writeUserFile(const std::string &name, const std::string &fileName) {
@@ -30,7 +35,6 @@ bool PS::writeUserFile(const std::string &name, const std::string &fileName) {
         if (std::filesystem::exists(sourcePath)) {
         std::filesystem::path destPath=folderName/sourcePath.filename();
         if (std::filesystem::copy_file(sourcePath, destPath,std::filesystem::copy_options::overwrite_existing)) {
-
             std::cout << "Файл "<<sourcePath.filename()<<" был успешно добавлен в базу данных"<< std::endl;
         }
         }
@@ -41,7 +45,6 @@ bool PS::writeUserFile(const std::string &name, const std::string &fileName) {
         std::cout << e.what() << std::endl;
     }
     return false;
-
 }
 std::string PS::readUserFile(const std::string &name) {
     if (!connected) {
@@ -52,4 +55,10 @@ std::string PS::readUserFile(const std::string &name) {
         std::cerr<<"File does not exist"<<std::endl;
     }
     return absolutePath.string();
+}
+extern "C"
+{
+DataBase * createDataBaseFunc() {
+        return new PS();
+    }
 }

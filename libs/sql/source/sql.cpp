@@ -1,5 +1,7 @@
 #include "sql.h"
+
 #include <iostream>
+
 const std::string mainDataPath="DataBaseSql.db";
 SQL::SQL() :connected(false),db(nullptr),dbPath(mainDataPath){}
 SQL::~SQL() {
@@ -74,6 +76,12 @@ bool SQL::createDataBase() {
     } else {
         std::cout << "Таблица 'Users' успешно создана (или уже существовала)." << std::endl;
         return true;
+    }
+}
+extern "C"
+{
+DataBase* createDataBaseFunc() {
+        return new SQL();
     }
 }
 
