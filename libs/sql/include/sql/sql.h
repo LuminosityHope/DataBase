@@ -1,8 +1,10 @@
 #ifndef SQL_H
 #define SQL_H
 #include "interface.h"
+
 #include "sqlite3.h"
-class SQL:DataBase {
+
+class SQL:public DataBase {
 public:
     SQL();
     ~SQL() override;
