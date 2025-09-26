@@ -28,28 +28,35 @@ bool SQL::disconnect() {
     return false;
 }
 bool SQL::isconnected() {
+    if(connected)
+        std::cout<<"You are signed"<<std::endl;
+    else
+        std::cout<<"You are not signed"<<std::endl;
     return connected;
 }
 bool SQL::writeUserFile(const std::string &name, const std::string &fileName) {
-    std::ifstream file(fileName);
-    if (std::filesystem::exists(fileName)) {
-        if (file.is_open()) {
-            std::ifstream file(fileName, std::ios::binary);
+    if (connected) {
+        std::ifstream file(fileName);
+        if (std::filesystem::exists(fileName)) {
+            if (file.is_open()) {
+                std::ifstream file(fileName, std::ios::binary);
+            }
         }
+        std::string content{std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>()};
+        const char* sql="INSERT INTO Users (Name, File,Content) VALUES (?, ?,?);";
+        sqlite3_stmt *stmt;
+        int rc=sqlite3_prepare_v2(db, sql, -1, &stmt, NULL);
+        if (rc != SQLITE_OK) {
+            std::cerr<<"Error"<<std::endl;
+        }
+        sqlite3_bind_text(stmt, 1, name.c_str(), -1, NULL);
+        sqlite3_bind_text(stmt, 2, fileName.c_str(), -1, NULL);
+        sqlite3_bind_blob(stmt,3,content.c_str(),content.size(),NULL);
+        rc = sqlite3_step(stmt);
+        sqlite3_finalize(stmt);
+        return rc == SQLITE_DONE;
     }
-    std::string content{std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>()};
-    const char* sql="INSERT INTO Users (Name, File,Content) VALUES (?, ?,?);";
-    sqlite3_stmt *stmt;
-    int rc=sqlite3_prepare_v2(db, sql, -1, &stmt, NULL);
-    if (rc != SQLITE_OK) {
-        std::cerr<<"Error"<<std::endl;
-    }
-    sqlite3_bind_text(stmt, 1, name.c_str(), -1, NULL);
-    sqlite3_bind_text(stmt, 2, fileName.c_str(), -1, NULL);
-    sqlite3_bind_blob(stmt,3,content.c_str(),content.size(),NULL);
-    rc = sqlite3_step(stmt);
-    sqlite3_finalize(stmt);
-    return rc == SQLITE_DONE;
+    return false;
 }
 std::string SQL::readUserFile(const std::string &name) {
     std::filesystem::path absolutePath=std::filesystem::absolute(mainDataPath.c_str());

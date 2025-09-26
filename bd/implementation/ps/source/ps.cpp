@@ -14,7 +14,7 @@ bool PS::connect() {
 }
 bool PS::disconnect() {
     connected=false;
-    std::cout<<"You are disconnected";
+    std::cout<<"You are disconnected"<<std::endl;
     return true;
 }
 bool PS::isconnected()  {
@@ -25,7 +25,7 @@ bool PS::isconnected()  {
     return connected;
 }
 bool PS::writeUserFile(const std::string &name, const std::string &fileName) {
-    if (!isconnected()) {
+    if (!connected) {
         return false;
     }
     try {
