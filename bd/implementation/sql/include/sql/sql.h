@@ -8,11 +8,11 @@ class SQL:public DataBase {
 public:
     SQL();
     ~SQL() override;
-    bool connect() override;
-    bool disconnect() override;
+    Error connect() override;
+    Error disconnect() override;
     bool isconnected() override;
-    bool writeUserFile(const std::string& name, const std::string& fileName) override;
-    bool createDataBase();
+    Error writeUserFile(const std::string& name, const std::string& fileName) override;
+    Error createDataBase();
     std::string readUserFile(const std::string& name) override;
 private:
     bool connected=false;
