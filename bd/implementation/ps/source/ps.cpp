@@ -1,50 +1,37 @@
 #include "ps.h"
 
+#include <iostream>
+
 const std::string mainDataPath="DataBaseFs";
 PS::PS():connected(false),mainDataBasePath(mainDataPath){}
 PS::~PS() {
     PS::disconnect();
-    std::cout << "База данных \"" << mainDataPath << "\" закрыта." << std::endl;
 }
-bool PS::connect() {
+Error PS::connect() {
     connected=true;
     std::filesystem::create_directories(mainDataBasePath);
-    std::cout << "База данных \"" << mainDataPath << "\" успешно открыта/создана." << std::endl;
-    return true;
+    return Error::successConnect;
 }
-bool PS::disconnect() {
+Error PS::disconnect() {
     connected=false;
-    std::cout<<"You are disconnected"<<std::endl;
-    return true;
+    return Error::successDisconnect;
 }
-bool PS::isconnected()  {
-    if(connected)
-        std::cout<<"You are signed"<<std::endl;
-    else
-        std::cout<<"You are not signed"<<std::endl;
+[[nodiscard]] bool PS::isconnected()
+{
     return connected;
 }
-bool PS::writeUserFile(const std::string &name, const std::string &fileName) {
-    if (!connected) {
-        return false;
-    }
-    try {
+Error PS::writeUserFile(const std::string &name, const std::string &fileName) {
         std::filesystem::path folderName=mainDataBasePath/name;
         std::filesystem::create_directories(folderName);
         std::filesystem::path sourcePath=fileName;
         if (std::filesystem::exists(sourcePath)) {
         std::filesystem::path destPath=folderName/sourcePath.filename();
         if (std::filesystem::copy_file(sourcePath, destPath,std::filesystem::copy_options::overwrite_existing)) {
-            std::cout << "Файл "<<sourcePath.filename()<<" был успешно добавлен в базу данных"<< std::endl;
+            return Error::successWriteToFile;
         }
         }
-        return true;
+    return Error::failedWrite;
 
-    }
-    catch (const std::exception &e) {
-        std::cout << e.what() << std::endl;
-    }
-    return false;
 }
 std::string PS::readUserFile(const std::string &name) {
     if (!connected) {
