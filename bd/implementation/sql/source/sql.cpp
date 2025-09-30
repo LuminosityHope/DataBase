@@ -53,9 +53,16 @@ Error SQL::writeUserFile(const std::string &name, const std::string &fileName) {
     sqlite3_finalize(stmt);
     return Error::successWriteToFile;
 }
-std::string SQL::readUserFile(const std::string &name) {
+Error SQL::readUserFile(const std::string &name) {
+    if (!connected) {
+        return Error::errorRead;
+    }
     std::filesystem::path absolutePath=std::filesystem::absolute(mainDataPath.c_str());
-    return absolutePath/name;
+    if (!std::filesystem::exists(absolutePath)) {
+        return Error::errorRead;
+    }
+    std::cout<<absolutePath/name<<std::endl;
+    return Error::successRead;
 }
 Error SQL::createDataBase() {
     if (!db) {

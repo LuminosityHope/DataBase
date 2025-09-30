@@ -13,7 +13,7 @@ public:
     bool isconnected() override;
     Error writeUserFile(const std::string& name, const std::string& fileName) override;
     Error createDataBase();
-    std::string readUserFile(const std::string& name) override;
+    Error readUserFile(const std::string& name) override;
 private:
     bool connected=false;
     sqlite3* db;
