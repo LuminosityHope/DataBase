@@ -87,7 +87,7 @@ int main() {
                 std::string name;
                 std::cout<<"Enter your name:";
                 std::cin>>name;
-                std::cout<<db->readUserFile(name)<<std::endl;
+                db->readUserFile(name);
                 break;
             }
             case 4: {
