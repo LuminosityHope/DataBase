@@ -58,9 +58,6 @@ Error SQL::readUserFile(const std::string &name) {
         return Error::errorRead;
     }
     std::filesystem::path absolutePath=std::filesystem::absolute(mainDataPath.c_str());
-    if (!std::filesystem::exists(absolutePath)) {
-        return Error::errorRead;
-    }
     std::cout<<absolutePath/name<<std::endl;
     return Error::successRead;
 }

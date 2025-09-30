@@ -38,6 +38,9 @@ Error PS::readUserFile(const std::string &name) {
         return Error::errorRead;
     }
     std::filesystem::path absolutePath=std::filesystem::absolute(mainDataBasePath/name);
+    if (!std::filesystem::exists(absolutePath)) {
+        return Error::errorRead;
+    }
     std::cout<<absolutePath.string()<<std::endl;
     return Error::successRead;
 }
