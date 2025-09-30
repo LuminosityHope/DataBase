@@ -33,15 +33,13 @@ Error PS::writeUserFile(const std::string &name, const std::string &fileName) {
     return Error::failedWrite;
 
 }
-std::string PS::readUserFile(const std::string &name) {
+Error PS::readUserFile(const std::string &name) {
     if (!connected) {
-        return "";
+        return Error::errorRead;
     }
     std::filesystem::path absolutePath=std::filesystem::absolute(mainDataBasePath/name);
-    if (!std::filesystem::exists(absolutePath)) {
-        std::cerr<<"File does not exist"<<std::endl;
-    }
-    return absolutePath.string();
+    std::cout<<absolutePath.string()<<std::endl;
+    return Error::successRead;
 }
 extern "C"
 {

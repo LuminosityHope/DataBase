@@ -10,7 +10,7 @@ public:
     Error disconnect() override;
     bool isconnected() override;
     Error writeUserFile(const std::string& name, const std::string& fileName) override;
-    std::string readUserFile(const std::string& name) override;
+    Error readUserFile(const std::string& name) override;
 private:
     bool connected=false;
     std::filesystem::path mainDataBasePath;
